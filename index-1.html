@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BarberPro — Sistema de Turnos</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       PANTALLA DE INICIO / SELECCIÓN DE ROL
+  ══════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-bg-texture"></div>
+    <header class="home-header">
+      <div class="logo-mark">✂</div>
+      <h1 class="logo-title">BARBER<span>PRO</span></h1>
+      <p class="logo-sub">Sistema integral de barbería</p>
+    </header>
+
+    <main class="home-main">
+      <p class="home-question">¿Cómo ingresás?</p>
+      <div class="role-cards">
+
+        <button class="role-card" onclick="showScreen('screen-login-admin')">
+          <div class="role-icon">🛡</div>
+          <div class="role-info">
+            <strong>Administrador</strong>
+            <span>Panel de control total</span>
+          </div>
+          <div class="role-arrow">→</div>
+        </button>
+
+        <button class="role-card" onclick="showScreen('screen-login-barber')">
+          <div class="role-icon">✂</div>
+          <div class="role-info">
+            <strong>Barbero</strong>
+            <span>Mi perfil y turnos</span>
+          </div>
+          <div class="role-arrow">→</div>
+        </button>
+
+        <button class="role-card accent" onclick="showScreen('screen-client-home')">
+          <div class="role-icon">📅</div>
+          <div class="role-info">
+            <strong>Sacar turno</strong>
+            <span>Clientes — sin registro</span>
+          </div>
+          <div class="role-arrow">→</div>
+        </button>
+
+        <button class="role-card" onclick="showScreen('screen-register')">
+          <div class="role-icon">👤</div>
+          <div class="role-info">
+            <strong>Registrarme</strong>
+            <span>Crear cuenta de cliente</span>
+          </div>
+          <div class="role-arrow">→</div>
+        </button>
+
+      </div>
+    </main>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       LOGIN ADMIN
+  ══════════════════════════════════════════ -->
+  <div id="screen-login-admin" class="screen">
+    <div class="login-wrap">
+      <button class="btn-back" onclick="showScreen('screen-home')">← Volver</button>
+      <div class="login-box">
+        <div class="login-badge admin">🛡 Admin</div>
+        <h2>Acceso Administrador</h2>
+        <div class="field-group">
+          <label>Usuario</label>
+          <input type="text" id="admin-user" placeholder="alexis" />
+        </div>
+        <div class="field-group">
+          <label>Contraseña</label>
+          <input type="password" id="admin-pass" placeholder="••••••" />
+        </div>
+        <p class="login-error hidden" id="admin-error">Usuario o contraseña incorrectos</p>
+        <button class="btn-primary" onclick="loginAdmin()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       LOGIN BARBERO
+  ══════════════════════════════════════════ -->
+  <div id="screen-login-barber" class="screen">
+    <div class="login-wrap">
+      <button class="btn-back" onclick="showScreen('screen-home')">← Volver</button>
+      <div class="login-box">
+        <div class="login-badge barber">✂ Barbero</div>
+        <h2>Acceso Barbero</h2>
+        <div class="field-group">
+          <label>Usuario</label>
+          <input type="text" id="barber-user" placeholder="tu usuario" />
+        </div>
+        <div class="field-group">
+          <label>Contraseña</label>
+          <input type="password" id="barber-pass" placeholder="••••••" />
+        </div>
+        <p class="login-error hidden" id="barber-error">Usuario o contraseña incorrectos</p>
+        <button class="btn-primary" onclick="loginBarber()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       REGISTRO CLIENTE
+  ══════════════════════════════════════════ -->
+  <div id="screen-register" class="screen">
+    <div class="login-wrap">
+      <button class="btn-back" onclick="showScreen('screen-home')">← Volver</button>
+      <div class="login-box wide">
+        <div class="login-badge client">👤 Nuevo cliente</div>
+        <h2>Crear cuenta</h2>
+        <div class="fields-row">
+          <div class="field-group">
+            <label>Nombre</label>
+            <input type="text" id="reg-name" placeholder="Tu nombre" />
+          </div>
+          <div class="field-group">
+            <label>Apellido</label>
+            <input type="text" id="reg-lastname" placeholder="Tu apellido" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Teléfono (opcional)</label>
+          <input type="tel" id="reg-phone" placeholder="+54 9 11 ..." />
+        </div>
+        <div class="field-group">
+          <label>Usuario</label>
+          <input type="text" id="reg-user" placeholder="elige un usuario" />
+        </div>
+        <div class="field-group">
+          <label>Contraseña</label>
+          <input type="password" id="reg-pass" placeholder="••••••" />
+        </div>
+        <p class="login-error hidden" id="reg-error">Completá todos los campos</p>
+        <button class="btn-primary" onclick="registerClient()">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       PANEL ADMINISTRADOR
+  ══════════════════════════════════════════ -->
+  <div id="screen-admin" class="screen">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="admin-sidebar">
+      <div class="sidebar-logo">✂ <span>BARBERPRO</span></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-panel="panel-dashboard" onclick="adminNav(this)">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-item" data-panel="panel-barbers" onclick="adminNav(this)">
+          <span class="nav-icon">✂</span> Barberos
+        </button>
+        <button class="nav-item" data-panel="panel-turnos" onclick="adminNav(this)">
+          <span class="nav-icon">📅</span> Turnos
+        </button>
+        <button class="nav-item" data-panel="panel-precios" onclick="adminNav(this)">
+          <span class="nav-icon">💰</span> Precios
+        </button>
+        <button class="nav-item" data-panel="panel-contabilidad" onclick="adminNav(this)">
+          <span class="nav-icon">📈</span> Contabilidad
+        </button>
+      </nav>
+      <button class="nav-item logout" onclick="logout()">
+        <span class="nav-icon">🚪</span> Salir
+      </button>
+    </aside>
+
+    <!-- Contenido admin -->
+    <main class="admin-main">
+
+      <!-- PANEL: Dashboard -->
+      <div id="panel-dashboard" class="admin-panel active">
+        <h2 class="panel-title">Dashboard <span class="panel-sub">Resumen del día</span></h2>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-num" id="stat-turnos">0</div>
+            <div class="stat-label">Turnos hoy</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-num" id="stat-recaudado">$0</div>
+            <div class="stat-label">Recaudado hoy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-barberos-activos">0</div>
+            <div class="stat-label">Barberos activos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-clientes">0</div>
+            <div class="stat-label">Clientes registrados</div>
+          </div>
+        </div>
+
+        <div class="dashboard-bottom">
+          <div class="dash-section">
+            <h3>Últimos turnos completados</h3>
+            <div class="table-wrap">
+              <table class="data-table" id="table-last-turnos">
+                <thead>
+                  <tr><th>Cliente</th><th>Barbero</th><th>Servicio</th><th>Total</th><th>Hora</th></tr>
+                </thead>
+                <tbody id="tbody-last-turnos">
+                  <tr><td colspan="5" class="empty">Sin turnos completados hoy</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: Barberos -->
+      <div id="panel-barbers" class="admin-panel">
+        <h2 class="panel-title">Barberos <span class="panel-sub">Gestión de empleados</span></h2>
+        <button class="btn-primary small" onclick="openModal('modal-new-barber')">+ Nuevo barbero</button>
+
+        <div class="barbers-list" id="barbers-list">
+          <!-- generado por JS -->
+        </div>
+      </div>
+
+      <!-- PANEL: Turnos -->
+      <div id="panel-turnos" class="admin-panel">
+        <h2 class="panel-title">Turnos <span class="panel-sub">Todos los turnos</span></h2>
+        <div class="filter-bar">
+          <select id="filter-barber" onchange="renderAdminTurnos()">
+            <option value="">Todos los barberos</option>
+          </select>
+          <select id="filter-estado" onchange="renderAdminTurnos()">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="completado">Completado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Cliente</th><th>Barbero</th><th>Servicio</th><th>Precio</th><th>Fecha/Hora</th><th>Estado</th><th>Acción</th></tr>
+            </thead>
+            <tbody id="tbody-admin-turnos">
+              <tr><td colspan="7" class="empty">No hay turnos</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL: Precios -->
+      <div id="panel-precios" class="admin-panel">
+        <h2 class="panel-title">Precios <span class="panel-sub">Servicios y comisiones</span></h2>
+        <button class="btn-primary small" onclick="openModal('modal-new-service')">+ Nuevo servicio</button>
+
+        <div class="table-wrap" style="margin-top:1.5rem">
+          <table class="data-table">
+            <thead>
+              <tr><th>Servicio</th><th>Precio</th><th>% Barbero</th><th>Ganancia barbero</th><th>Ganancia negocio</th><th>Acciones</th></tr>
+            </thead>
+            <tbody id="tbody-servicios">
+              <tr><td colspan="6" class="empty">Sin servicios aún</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL: Contabilidad -->
+      <div id="panel-contabilidad" class="admin-panel">
+        <h2 class="panel-title">Contabilidad <span class="panel-sub">Liquidación de barberos</span></h2>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Barbero</th><th>Cortes realizados</th><th>Total facturado</th><th>A pagar al barbero</th><th>Ganancia negocio</th></tr>
+            </thead>
+            <tbody id="tbody-contabilidad">
+              <tr><td colspan="5" class="empty">Sin datos</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /screen-admin -->
+
+
+  <!-- ══════════════════════════════════════════
+       PANEL BARBERO
+  ══════════════════════════════════════════ -->
+  <div id="screen-barber" class="screen">
+
+    <aside class="sidebar barber-sidebar">
+      <div class="sidebar-logo">✂ <span>Mi Panel</span></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-panel="bp-turnos" onclick="barberNav(this)">
+          <span class="nav-icon">📅</span> Mis Turnos
+        </button>
+        <button class="nav-item" data-panel="bp-perfil" onclick="barberNav(this)">
+          <span class="nav-icon">👤</span> Mi Perfil
+        </button>
+        <button class="nav-item" data-panel="bp-trabajos" onclick="barberNav(this)">
+          <span class="nav-icon">🖼</span> Mis Trabajos
+        </button>
+        <button class="nav-item" data-panel="bp-ganancias" onclick="barberNav(this)">
+          <span class="nav-icon">💵</span> Mis Ganancias
+        </button>
+      </nav>
+      <button class="nav-item logout" onclick="logout()">
+        <span class="nav-icon">🚪</span> Salir
+      </button>
+    </aside>
+
+    <main class="admin-main">
+
+      <!-- Turnos del barbero -->
+      <div id="bp-turnos" class="admin-panel active">
+        <h2 class="panel-title">Mis Turnos <span class="panel-sub" id="barber-name-label"></span></h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Cliente</th><th>Servicio</th><th>Precio</th><th>Fecha/Hora</th><th>Estado</th><th>Acción</th></tr>
+            </thead>
+            <tbody id="tbody-barber-turnos">
+              <tr><td colspan="6" class="empty">No tenés turnos asignados</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Perfil del barbero -->
+      <div id="bp-perfil" class="admin-panel">
+        <h2 class="panel-title">Mi Perfil</h2>
+        <div class="perfil-card">
+          <div class="perfil-avatar" id="barber-avatar-preview">✂</div>
+          <div class="perfil-fields">
+            <div class="field-group">
+              <label>Nombre a mostrar</label>
+              <input type="text" id="barber-display-name" placeholder="Nombre público" />
+            </div>
+            <div class="field-group">
+              <label>Instagram</label>
+              <input type="text" id="barber-instagram" placeholder="@usuario" />
+            </div>
+            <div class="fields-row">
+              <div class="field-group">
+                <label>Hora inicio</label>
+                <input type="time" id="barber-hora-inicio" value="09:00" />
+              </div>
+              <div class="field-group">
+                <label>Hora fin</label>
+                <input type="time" id="barber-hora-fin" value="18:00" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Días que trabajo</label>
+              <div class="dias-check" id="dias-check">
+                <label><input type="checkbox" value="Lun" checked /> Lun</label>
+                <label><input type="checkbox" value="Mar" checked /> Mar</label>
+                <label><input type="checkbox" value="Mié" checked /> Mié</label>
+                <label><input type="checkbox" value="Jue" checked /> Jue</label>
+                <label><input type="checkbox" value="Vie" checked /> Vie</label>
+                <label><input type="checkbox" value="Sáb" /> Sáb</label>
+                <label><input type="checkbox" value="Dom" /> Dom</label>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="saveBarberProfile()">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trabajos del barbero -->
+      <div id="bp-trabajos" class="admin-panel">
+        <h2 class="panel-title">Mis Trabajos <span class="panel-sub">Portfolio</span></h2>
+        <div class="upload-area" onclick="document.getElementById('upload-work').click()">
+          <input type="file" id="upload-work" accept="image/*" hidden onchange="previewWork(event)" />
+          <div class="upload-icon">📸</div>
+          <p>Hacé clic para subir una foto de un trabajo</p>
+          <small>JPG, PNG, WEBP — máx. 5MB</small>
+        </div>
+        <div class="works-grid" id="works-grid">
+          <!-- fotos de trabajos -->
+        </div>
+      </div>
+
+      <!-- Ganancias del barbero -->
+      <div id="bp-ganancias" class="admin-panel">
+        <h2 class="panel-title">Mis Ganancias</h2>
+        <div class="stats-grid small">
+          <div class="stat-card gold">
+            <div class="stat-num" id="barber-total-ganado">$0</div>
+            <div class="stat-label">Total acumulado</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="barber-total-cortes">0</div>
+            <div class="stat-label">Cortes realizados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="barber-hoy-ganado">$0</div>
+            <div class="stat-label">Ganado hoy</div>
+          </div>
+        </div>
+        <div class="table-wrap" style="margin-top:2rem">
+          <table class="data-table">
+            <thead>
+              <tr><th>Servicio</th><th>Cliente</th><th>Precio total</th><th>Tu parte</th><th>Fecha</th></tr>
+            </thead>
+            <tbody id="tbody-barber-ganancias">
+              <tr><td colspan="5" class="empty">Sin cortes registrados aún</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /screen-barber -->
+
+
+  <!-- ══════════════════════════════════════════
+       PANEL CLIENTE — Sacar turno
+  ══════════════════════════════════════════ -->
+  <div id="screen-client-home" class="screen">
+    <div class="client-wrap">
+      <button class="btn-back" onclick="showScreen('screen-home')">← Volver</button>
+
+      <header class="client-header">
+        <h1>✂ Reservá tu turno</h1>
+        <p>Elegí barbero, servicio y horario</p>
+      </header>
+
+      <!-- Paso 1: elegir barbero -->
+      <section class="client-step" id="step-barber">
+        <h3>1. Elegí tu barbero</h3>
+        <div class="barber-cards" id="barber-cards">
+          <!-- generado por JS -->
+        </div>
+      </section>
+
+      <!-- Paso 2: servicio -->
+      <section class="client-step hidden" id="step-service">
+        <h3>2. Elegí el servicio</h3>
+        <div class="service-list" id="service-list">
+          <!-- generado por JS -->
+        </div>
+        <button class="btn-ghost" onclick="resetStep('step-barber', 'step-service')">← Cambiar barbero</button>
+      </section>
+
+      <!-- Paso 3: fecha y hora -->
+      <section class="client-step hidden" id="step-datetime">
+        <h3>3. Elegí fecha y hora</h3>
+        <div class="fields-row">
+          <div class="field-group">
+            <label>Fecha</label>
+            <input type="date" id="client-fecha" />
+          </div>
+          <div class="field-group">
+            <label>Hora</label>
+            <input type="time" id="client-hora" />
+          </div>
+        </div>
+        <button class="btn-ghost" onclick="resetStep('step-service', 'step-datetime')">← Cambiar servicio</button>
+        <button class="btn-primary" onclick="goToStepData()">Continuar →</button>
+      </section>
+
+      <!-- Paso 4: datos del cliente -->
+      <section class="client-step hidden" id="step-datos">
+        <h3>4. Tus datos</h3>
+        <div class="field-group">
+          <label>Nombre completo</label>
+          <input type="text" id="client-nombre" placeholder="Juan Pérez" />
+        </div>
+        <div class="field-group">
+          <label>Teléfono (opcional)</label>
+          <input type="tel" id="client-tel" placeholder="+54 9 ..." />
+        </div>
+        <button class="btn-ghost" onclick="resetStep('step-datetime', 'step-datos')">← Cambiar horario</button>
+        <button class="btn-primary" onclick="confirmarTurno()">Confirmar turno ✓</button>
+      </section>
+
+      <!-- Confirmación -->
+      <section class="client-step hidden" id="step-ok">
+        <div class="confirm-ok">
+          <div class="confirm-check">✓</div>
+          <h2>¡Turno reservado!</h2>
+          <div class="confirm-detail" id="confirm-detail"></div>
+          <button class="btn-primary" onclick="showScreen('screen-home')">Volver al inicio</button>
+        </div>
+      </section>
+
+    </div>
+  </div><!-- /screen-client-home -->
+
+
+  <!-- ══════════════════════════════════════════
+       MODALES
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="modal-overlay" onclick="closeModals()"></div>
+
+  <!-- Modal: Nuevo barbero -->
+  <div class="modal hidden" id="modal-new-barber">
+    <div class="modal-header">
+      <h3>Nuevo barbero</h3>
+      <button onclick="closeModals()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label>Nombre completo</label>
+        <input type="text" id="nb-name" placeholder="Nombre del barbero" />
+      </div>
+      <div class="fields-row">
+        <div class="field-group">
+          <label>Usuario</label>
+          <input type="text" id="nb-user" placeholder="usuario" />
+        </div>
+        <div class="field-group">
+          <label>Contraseña</label>
+          <input type="password" id="nb-pass" placeholder="••••••" />
+        </div>
+      </div>
+      <p class="login-error hidden" id="nb-error">Completá todos los campos</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModals()">Cancelar</button>
+      <button class="btn-primary" onclick="createBarber()">Crear barbero</button>
+    </div>
+  </div>
+
+  <!-- Modal: Nuevo servicio -->
+  <div class="modal hidden" id="modal-new-service">
+    <div class="modal-header">
+      <h3>Nuevo servicio</h3>
+      <button onclick="closeModals()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label>Nombre del servicio</label>
+        <input type="text" id="ns-name" placeholder="Ej: Corte + barba" />
+      </div>
+      <div class="fields-row">
+        <div class="field-group">
+          <label>Precio ($)</label>
+          <input type="number" id="ns-price" placeholder="2500" min="0" />
+        </div>
+        <div class="field-group">
+          <label>% para el barbero</label>
+          <input type="number" id="ns-pct" placeholder="50" min="0" max="100" />
+        </div>
+      </div>
+      <p class="login-error hidden" id="ns-error">Completá todos los campos</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModals()">Cancelar</button>
+      <button class="btn-primary" onclick="createService()">Guardar servicio</button>
+    </div>
+  </div>
+
+  <!-- Modal: Ver perfil barbero (desde admin) -->
+  <div class="modal hidden" id="modal-view-barber">
+    <div class="modal-header">
+      <h3 id="modal-barber-title">Perfil del barbero</h3>
+      <button onclick="closeModals()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-barber-body">
+      <!-- generado por JS -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModals()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Toast de notificaciones -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
